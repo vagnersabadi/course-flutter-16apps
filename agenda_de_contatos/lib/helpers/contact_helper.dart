@@ -17,6 +17,7 @@ class ContactHelper {
 
   Database _db;
 
+
   Future<Database> get db async {
     if (_db != null) {
       return _db;
@@ -57,6 +58,43 @@ class ContactHelper {
       return null;
     }
   }
+
+//deletar contato
+  Future<int> deleteContact(int id) async {
+    Database dbContact = await db;
+    return await dbContact
+        .delete(contacTable, where: "$idColumn = ?", whereArgs: [id]);
+  }
+
+//atualizar contato
+  Future<int> updateContact(Contact contact) async {
+    Database dbContact = await db;
+    return await dbContact.update(contacTable, contact.toMap(),
+        where: "$idColumn = ? ", whereArgs: [contact.id]);
+  }
+
+  Future<List> getAllContacts() async {
+    Database dbContact = await db;
+    List listMap = await dbContact.rawQuery("SELECT * FROM $contacTable");
+    List<Contact> listContact = List();
+    for (Map m in listMap) {
+      listContact.add(Contact.fromMap(m));
+    }
+    return listContact;
+  }
+
+//quantidade de dados
+  Future<int> getNumber() async {
+    Database dbContact = await db;
+    return Sqflite.firstIntValue(
+        await dbContact.rawQuery(("SELECT COUNT(*) FROM $contacTable")));
+  }
+
+//fechar conexao com banco
+  Future close() async {
+    Database dbContact = await db;
+    dbContact.close();
+  }
 }
 
 class Contact {
@@ -65,6 +103,9 @@ class Contact {
   String email;
   String phone;
   String img;
+
+  Contact();
+
 
   //storege formato de mapa
   Contact.fromMap(Map map) {
