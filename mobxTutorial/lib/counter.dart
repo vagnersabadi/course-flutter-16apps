@@ -1,21 +1,38 @@
+//import 'package:mobx/mobx.dart';
+//
+//class  Counter {
+//
+//  Counter(){
+//    increment = Action(_increment);
+//  }
+//
+//  // state
+//  Observable _count = Observable(0);
+//  int get count => _count.value;
+//
+//  Action increment;
+//  void _increment(){
+//    _count.value++;
+//  }
+//
+//
+//}
 import 'package:mobx/mobx.dart';
 
-class  Counter {
+part 'counter.g.dart';
 
-  Counter(){
-    increment = Action(_increment);
-  }
+class Counter = _Counter with _$Counter;
 
-  //state
-  Observable _count = Observable(0);
-
-  int get count => _count.value;
+abstract class  _Counter with Store{
 
 
-  Action increment;
+  // state
+  @observable
+  int count = 0;
 
-  void _increment(){
-    _count.value++;
+  @action
+  void increment(){
+    count++;
   }
 
 
