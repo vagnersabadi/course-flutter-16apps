@@ -11,8 +11,9 @@ abstract class _LoginStoreBase with Store {
     });
   }
 
-  // OBSERVABLE
-
+  /*
+  *   OBSERVABLE
+  */
   @observable
   String email = "";
 
@@ -25,7 +26,9 @@ abstract class _LoginStoreBase with Store {
   @observable
   bool loggedIn = false;
 
-  // ACTIONS
+  /*
+  *   ACTIONS
+  */
   @action
   void setEmail(String value) => email = value;
 
@@ -56,7 +59,9 @@ abstract class _LoginStoreBase with Store {
     loggedIn = false;
   }
 
-  // COMPUTED
+  /*
+  *   COMPUTED
+  */
   @computed
   bool get isEmailValid => RegExp(
           r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")

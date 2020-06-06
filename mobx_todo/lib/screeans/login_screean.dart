@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:mobx_todo/screeans/list_screen.dart';
 import 'package:mobx_todo/stores/login_store.dart';
 import 'package:mobx_todo/widgets/custom_icon_button.dart';
 import 'package:mobx_todo/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreean extends StatefulWidget {
   LoginScreean({Key key}) : super(key: key);
@@ -13,6 +16,22 @@ class LoginScreean extends StatefulWidget {
 
 class _LoginScreeanState extends State<LoginScreean> {
   LoginStore loginStore = new LoginStore();
+
+  ReactionDisposer disposer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // loginStore = Provider.of<LoginStore>(context);
+
+    // aguarda troca
+    disposer = reaction((_) => loginStore.loggedIn, (loggedIn) {
+      print(loggedIn);
+      if (loggedIn)
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => ListScreen()));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +69,9 @@ class _LoginScreeanState extends State<LoginScreean> {
                         enabled: !loginStore.loading,
                         suffix: CustomIconButton(
                           radius: 32,
-                          iconData: loginStore.passwordVisible ? Icons.visibility_off : Icons.visibility,
+                          iconData: loginStore.passwordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           onTap: loginStore.togglePasswordVisibility,
                         ),
                       );
@@ -85,5 +106,12 @@ class _LoginScreeanState extends State<LoginScreean> {
         ),
       ),
     );
+  }
+
+// para nao ficar executando infinitamente
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
   }
 }
