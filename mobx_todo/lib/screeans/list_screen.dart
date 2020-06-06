@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx_todo/screeans/login_screean.dart';
+import 'package:mobx_todo/stores/list_store.dart';
 import 'package:mobx_todo/widgets/custom_icon_button.dart';
 import 'package:mobx_todo/widgets/custom_text_field.dart';
 
@@ -9,6 +12,7 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final TextEditingController controller = TextEditingController();
+  final ListStore listStore = ListStore();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +39,12 @@ class _ListScreenState extends State<ListScreen> {
                     IconButton(
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        //  Provider.of<LoginStore>(context, listen: false).logout();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context)=>LoginScreean())
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -50,14 +59,58 @@ class _ListScreenState extends State<ListScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: <Widget>[
-                        CustomTextField(
-                          controller: controller,
-                          hint: 'Tarefa',
-                          onChanged: (_) {},
-                          suffix: null,
-                        ),
+                        Observer(builder: (_) {
+                          return CustomTextField(
+                            controller: controller,
+                            hint: 'Tarefa',
+                            onChanged: listStore.setNewTodoTitle,
+                            suffix: listStore.isFormValid
+                                ? CustomIconButton(
+                                    radius: 32,
+                                    iconData: Icons.add,
+                                    onTap: () {
+                                      listStore.addTodo();
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback(
+                                              (_) => controller.clear());
+                                    },
+                                  )
+                                : null,
+                          );
+                        }),
                         const SizedBox(
                           height: 8,
+                        ),
+                        Expanded(
+                          child: Observer(
+                            builder: (_){
+                              return ListView.separated(
+                                itemCount: listStore.todoList.length,
+                                itemBuilder: (_, index){
+                                  final todo = listStore.todoList[index];
+                                  return Observer(
+                                    builder: (_){
+                                      return ListTile(
+                                        title: Text(
+                                          todo.title,
+                                          style: TextStyle(
+                                            decoration: todo.done ?
+                                              TextDecoration.lineThrough : null,
+                                            color: todo.done ?
+                                              Colors.grey : Colors.black
+                                          ),
+                                        ),
+                                        onTap: todo.toggleDone,
+                                      );
+                                    },
+                                  );
+                                },
+                                separatorBuilder: (_, __){
+                                  return Divider();
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
