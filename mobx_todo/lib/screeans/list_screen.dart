@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx_todo/screeans/login_screean.dart';
 import 'package:mobx_todo/stores/list_store.dart';
+import 'package:mobx_todo/stores/login_store.dart';
 import 'package:mobx_todo/widgets/custom_icon_button.dart';
 import 'package:mobx_todo/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 class ListScreen extends StatefulWidget {
   @override
@@ -40,7 +42,7 @@ class _ListScreenState extends State<ListScreen> {
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.white,
                       onPressed: () {
-                        //  Provider.of<LoginStore>(context, listen: false).logout();
+                         Provider.of<LoginStore>(context, listen: false).logout();
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context)=>LoginScreean())
                         );

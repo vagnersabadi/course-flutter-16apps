@@ -15,14 +15,14 @@ class LoginScreean extends StatefulWidget {
 }
 
 class _LoginScreeanState extends State<LoginScreean> {
-  LoginStore loginStore = new LoginStore();
+  LoginStore loginStore;
 
   ReactionDisposer disposer;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // loginStore = Provider.of<LoginStore>(context);
+    loginStore = Provider.of<LoginStore>(context);
 
     // aguarda troca
     disposer = reaction((_) => loginStore.loggedIn, (loggedIn) {
