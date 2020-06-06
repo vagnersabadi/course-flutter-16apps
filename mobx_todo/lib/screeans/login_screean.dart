@@ -41,18 +41,20 @@ class _LoginScreeanState extends State<LoginScreean> {
                     const SizedBox(
                       height: 16,
                     ),
-                    CustomTextField(
-                      hint: 'Senha',
-                      prefix: Icon(Icons.lock),
-                      obscure: false,
-                      onChanged: loginStore.setPassword,
-                      enabled: true,
-                      suffix: CustomIconButton(
-                        radius: 32,
-                        iconData: Icons.visibility,
-                        onTap: () {},
-                      ),
-                    ),
+                    Observer(builder: (_) {
+                      return CustomTextField(
+                        hint: 'Senha',
+                        prefix: Icon(Icons.lock),
+                        obscure: !loginStore.passwordVisible,
+                        onChanged: loginStore.setPassword,
+                        enabled: !loginStore.loading,
+                        suffix: CustomIconButton(
+                          radius: 32,
+                          iconData: loginStore.passwordVisible ? Icons.visibility_off : Icons.visibility,
+                          onTap: loginStore.togglePasswordVisibility,
+                        ),
+                      );
+                    }),
                     const SizedBox(
                       height: 16,
                     ),
