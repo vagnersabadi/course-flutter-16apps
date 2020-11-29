@@ -1,17 +1,16 @@
-import 'dart:async';
-
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:favorite_yt_bloc/api.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:favorite_yt_bloc/models/video.dart';
+import 'dart:async';
 
 class VideosBloc implements BlocBase {
   Api api;
 
   List<Video> videos;
 
-  final StreamController<List<Video>> _videoController =
+  final StreamController<List<Video>> _videosController =
       StreamController<List<Video>>();
-  Stream get outVideos => _videoController.stream;
+  Stream get outVideos => _videosController.stream;
 
   final StreamController<String> _searchController = StreamController<String>();
   Sink get inSearch => _searchController.sink;
@@ -23,13 +22,18 @@ class VideosBloc implements BlocBase {
   }
 
   void _search(String search) async {
-    videos = await api.search(search);
-    _videoController.sink.add(videos);
+    if (search != null) {
+      _videosController.sink.add([]);
+      videos = await api.search(search);
+    } else {
+      videos += await api.nextPage();
+    }
+    _videosController.sink.add(videos);
   }
 
   @override
   void dispose() {
-    _videoController.close();
+    _videosController.close();
     _searchController.close();
   }
 }
